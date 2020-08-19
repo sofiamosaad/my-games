@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
@@ -42,27 +42,56 @@ function flipCard(cards, cardToFlip) {
 }
 
 function Memory() {
-    // [<current state>, <function to update state>] = useState(<initial state>)
+
+
+    // [<current state>, <function to update state>] = useState(<initial state>) 
+     //const [cards, setCards] = useState(generateCards());
+
+    /*The above is the same as: 
+    const stateArray = useState(generateCards());
+    const cards = stateArray(0);
+    const setCards = stateArray[1];
+    */
+
     const [game, setGame] = useState({
         cards: generateCards(), 
         firstCard: undefined, 
         secondCard: undefined,
     });
 
-    /* 
+    const [startTime, setStartTime] = useState(0);
+    const [elapsedTime, setElapsedTime] = useState(0);
 
-    const [cards, setCards] = useState(generateCards());
+    useEffect(() => {
+        if (startTime !== 0) {
+            const intervalId = setInterval(() => {
+            setElapsedTime(Date.now() - startTime);
+            }, 1000);
+            return () => clearInterval(intervalId);
+        }
+       
+    }, [startTime]);
 
-    The same as: 
-    const stateArray = useState(generateCards());
-    const cards = stateArray(0);
-    const setCards = stateArray[1];
-    */
+    //useEffect(() => {
+        //console.log(Date.now());
+        //return
+    // }, []);
+
+    //The above uses a dependency array
+    // useState(<effect function>, <dependency array>) 
+    // dependency array: 
+    // * undefined: effect function will be run on every render
+    // * empty array []: will run on first render ONLY
+    // * [value1, value2]: will run when any of the value change
+    // effect function returns a clean-up function (optional) 
+    //that runs next time the effect function is run OR 
+    //when the component unmounds (disappears from the DOM)
 
     /*
     Runs every time a card is clicked, flips this card (updates state) 
     */
-    /*
+
+    /* (old version)
     function onCardClicked(clickedCard) {
         setCards((oldCards) => {
             return oldCards.map((card) => {
@@ -141,6 +170,11 @@ function Memory() {
       }
   
     });
+
+    setStartTime((oldStartTime) => 
+        oldStartTime === 0 ? Date.now() : oldStartTime
+        );
+
   }
    
     function onRestart() {
@@ -149,11 +183,13 @@ function Memory() {
             firstCard: undefined, 
             secondCard: undefined,
         });
+        setStartTime(0);
+        setElapsedTime(0);
     }
 
     return (
         <div className="game-container">
-           <StatusBar status="Time: 0s" onRestart={onRestart}/>
+           <StatusBar status={"Time: " + elapsedTime} onRestart={onRestart}/>
            <div className="memory-grid">
                {game.cards.map((card) => 
                (<MemoryCard 
