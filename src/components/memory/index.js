@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import StatusBar from "./StatusBar";
 import MemoryCard from "./MemoryCard";
+import * as utils from "../../utils";
 
 const colors = [
     "pink",
@@ -38,11 +39,16 @@ function flipCard(cards, cardToFlip) {
             return { ...card, isFlipped: !card.isFlipped};
         }
         return card;
-    })
+    });
 }
 
 function Memory() {
-
+    
+    /*
+    utils
+        .fetchLeaderboard("memory")
+        .then((leaderboard) => console.log(leaderboard));
+    */
 
     // [<current state>, <function to update state>] = useState(<initial state>) 
      //const [cards, setCards] = useState(generateCards());
@@ -72,6 +78,19 @@ function Memory() {
         }
        
     }, [startTime, win]);
+
+    useEffect(() => {
+        if(win) {
+            utils
+                .saveScore("memory", {
+                name: "Carl",
+                timeMS: elapsedTime,
+            })
+            .then(() => console.log("Score saved."))
+            .then(() => utils.fetchLeaderboard("memory"))
+            .then((leaderboard) => console.log(leaderboard));
+        }
+    }, [win]);
 
     //useEffect(() => {
         //console.log(Date.now());
