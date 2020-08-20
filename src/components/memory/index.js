@@ -61,16 +61,17 @@ function Memory() {
 
     const [startTime, setStartTime] = useState(0);
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [win, setWin] = useState(false);
 
     useEffect(() => {
-        if (startTime !== 0) {
+        if (startTime !== 0 && !win) {
             const intervalId = setInterval(() => {
             setElapsedTime(Date.now() - startTime);
             }, 1000);
             return () => clearInterval(intervalId);
         }
        
-    }, [startTime]);
+    }, [startTime, win]);
 
     //useEffect(() => {
         //console.log(Date.now());
@@ -138,8 +139,14 @@ function Memory() {
       // we should flip the clicked card, keep the firstCard as is, but set the secondCard
 
       else if (!secondCard) {
+          let newCards = flipCard(cards, clickedCard);
+          if (newCards.every((card) => card.isFlipped)) {
+              setWin(true);
+              console.log("You won!");
+          }
+
         return {
-            cards: flipCard(cards, clickedCard),
+            cards: newCards,
             firstCard: firstCard,
             secondCard: clickedCard,
         };
@@ -185,6 +192,7 @@ function Memory() {
         });
         setStartTime(0);
         setElapsedTime(0);
+        setWin(false);
     }
 
     return (
