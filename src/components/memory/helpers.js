@@ -1,3 +1,5 @@
+import * as utils from "../../utils";
+
 const colors = [
     "pink",
     "red",
@@ -101,4 +103,20 @@ const colors = [
         firstCard: clickedCard,
       };
     }
+  }
+
+  //Score objects syntax
+
+  export function fetchLeaderboard() {
+    return utils
+    .fetchLeaderboard("memory", [["timeMs", "asc"]])
+    .then((leaderboard) => 
+    leaderboard.map(
+      (score, i) => `${i + 1}. ${score.name}: ${score.timeMs}ms`
+      )
+    );
+  }
+
+  export function saveScore(name, timeMs) {
+    utils.saveScore("memory", { name, timeMs });
   }

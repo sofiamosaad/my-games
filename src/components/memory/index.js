@@ -81,7 +81,9 @@ function Memory() {
       show={showModal} 
       handleClose={() => setShowModal(false)}
       header={"Congratulations, you won!"}
-      body={"Your time was " + elapsedTime + " ms."}>
+      body={"Your time was " + elapsedTime + " ms."}
+      fetchLeaderboard={helpers.fetchLeaderboard}
+      saveScore={(name) => helpers.saveScore(name, elapsedTime)}>
       </ResultModal>
     </div>
   );
