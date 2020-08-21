@@ -9,3 +9,8 @@
     width: 40vw;
     margin: 1vw auto;
 }
+
+.navbar-brand {
+    font-family: 'Bangers', cursive;
+    font-size: 2.5em;
+}
